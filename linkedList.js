@@ -93,6 +93,11 @@ export class LinkedList {
     return null;
   }
 
+  updateValue(index, value) {
+    const currentNode = at(index);
+    currentNode.value = value;
+  }
+
   containsKey(key) {
     let currentNode = this.head;
     while(currentNode) {
