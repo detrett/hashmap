@@ -15,6 +15,9 @@ test.set('ice cream', 'white')
 test.set('jacket', 'blue')
 test.set('kite', 'pink')
 test.set('lion', 'golden')
+console.log(test.capacity);
+test.set('baby', 'green')
+console.log(test.capacity);
 
 console.log(test.get('apple'));
 console.log(test.has('apple'));
@@ -23,5 +26,7 @@ console.log(test.keys());
 console.log(test.values());
 console.log(test.entries());
 console.log(test.list());
+console.log(test.length());
+
 
 

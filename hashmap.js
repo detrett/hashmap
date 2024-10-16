@@ -9,11 +9,11 @@ export class HashMap {
     this.buckets = new Array(this.capacity).fill(null);
   }
 
-  hash(key, tableSize) {
+  hash(key, capacity) {
     let total = 0;
     for (let i = 0; i < key.length; i++) {
       const char = key.charCodeAt(i);
-      total = (total + char * 17) % tableSize;
+      total = (total + char * 17) % capacity;
     }
     return total;
   }
@@ -34,7 +34,7 @@ export class HashMap {
         this.size++;
         // Check if we have exceeded the load factor and we need to resize
         if (this.size / this.capacity > this.loadFactor) {
-          resize();
+          this.resize();
         }
       }
     }
@@ -46,7 +46,7 @@ export class HashMap {
       this.size++;
       // Check if we have exceeded the load factor and we need to resize
       if (this.size / this.capacity > this.loadFactor) {
-        resize();
+        this.resize();
       }
     }
   }
@@ -152,7 +152,19 @@ export class HashMap {
   }
 
   resize() {
-    const newCapacity = this.capacity * 2;
-    const newBuckets = new Array(newCapacity).fill(null);
+    const oldBuckets = this.buckets;
+    this.capacity *= 2;
+    this.size = 0;
+    this.buckets = new Array(this.capacity).fill(null);
+
+    oldBuckets.forEach((bucket) => {
+      if(bucket) {
+        let node = bucket.head;
+        while (node) {
+          this.set(node.key, node.value);
+          node = node.nextNode;
+        }
+      }
+    })
   }
 }
