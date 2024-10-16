@@ -3,9 +3,10 @@ import { LinkedList } from "./linkedList.js";
 export class HashMap {
   constructor(capacity = 16, loadFactor = 0.75) {
     this.capacity = capacity;
-    this.loadFactor = loadFactor;
+    // Load factor between 0.75 and 1 (e.g., resize at 12 for a load factor of 0.75)
+    this.loadFactor = loadFactor >= 0.75 && loadFactor <= 1 ? loadFactor : 0.75;
     this.size = 0;
-    this.buckets = new Array(this.capacity).fill(null).map(() => []);
+    this.buckets = new Array(this.capacity).fill(null);
   }
 
   hash(key, tableSize) {
@@ -20,15 +21,12 @@ export class HashMap {
   set(key, value) {
     const hashCode = this.hash(key, this.capacity);
     // If a list already exists at that location
-    if (
-      this.buckets[hashCode] !== null &&
-      this.buckets[hashCode] instanceof LinkedList
-    ) {
+    if (this.buckets[hashCode] !== null) {
       const linkedList = this.buckets[hashCode];
-      const findKey = linkedList.findKey(key);
+      const index = linkedList.findKey(key);
       // Check if the key already exists in the list to update its value
-      if (findKey) {
-        linkedList.updateValue(findKey, value);
+      if (index !== null) {
+        linkedList.updateValue(index, value);
       }
       // If not, append the new node to the list
       else {
@@ -39,7 +37,7 @@ export class HashMap {
           resize();
         }
       }
-    } 
+    }
     // Create a list and append the node
     else {
       const linkedList = new LinkedList();
@@ -55,21 +53,106 @@ export class HashMap {
 
   get(key) {
     const hashCode = this.hash(key, this.capacity);
+    const linkedList = this.buckets[hashCode];
+    // If a list exists at that location
+    if (linkedList) {
+      const index = linkedList.findKey(key);
+      // If an item with that key is found return its value, else return null
+      return index !== null ? linkedList.at(index).value : null;
+    } else return null;
   }
 
-  has(key) {}
+  has(key) {
+    const hashCode = this.hash(key, this.capacity);
+    const linkedList = this.buckets[hashCode];
+    // If a list exists at that location
+    if (linkedList) {
+      const index = linkedList.findKey(key);
+      // If an item with that key is found return true, else return false
+      return index !== null ? true : false;
+    }
+  }
 
-  remove(key) {}
+  remove(key) {
+    const hashCode = this.hash(key, this.capacity);
+    const linkedList = this.buckets[hashCode];
+    // If a list exists at that location
+    if (linkedList) {
+      const index = linkedList.findKey(key);
+      if (index !== null) {
+        linkedList.removeAt(index);
+        this.size--;
+        return true;
+      } else return false;
+      // If an item with that key is found return true, else return false
+    } else return false;
+  }
 
-  length() {}
+  length() {
+    return this.size;
+  }
 
-  clear() {}
+  clear() {
+    this.capacity = 16;
+    this.size = 0;
+    this.buckets = new Array(this.capacity).fill(null);
+  }
 
-  keys() {}
+  keys() {
+    const keysArray = [];
+    this.buckets.forEach((element) => {
+      if(element) {
+        let node = element.head;
+        while(node) {
+          keysArray.push(node.key);
+          node = node.nextNode;
+        }
+      }
+    })
+    return keysArray;
+  }
 
-  values() {}
+  values() {
+    const valuesArray = [];
+    this.buckets.forEach((element) => {
+      if(element) {
+        let node = element.head;
+        while(node) {
+          valuesArray.push(node.value);
+          node = node.nextNode;
+        }
+      }
+    })
+    return valuesArray;
+  }
 
-  entries() {}
+  entries() {
+    const entriesArray = [];
+    this.buckets.forEach((element) => {
+      if(element) {
+        let node = element.head;
+        while(node) {
+          entriesArray.push(`[${node.key}, ${node.value}]`);
+          node = node.nextNode;
+        }
+      }
+    })
+    return entriesArray;
+  }
 
-  resize() {}
+  list() {
+    const listArray = [];
+    this.buckets.forEach((element) => {
+      if(element) {
+        let node = element.head;
+        listArray.push(node.toString());
+      }
+    })
+    return listArray;
+  }
+
+  resize() {
+    const newCapacity = this.capacity * 2;
+    const newBuckets = new Array(newCapacity).fill(null);
+  }
 }

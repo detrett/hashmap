@@ -4,4 +4,10 @@ export class Node {
     this.value = value;
     this.nextNode = nextNode;
   }
+
+  toString() {
+    return `( Key: ${this.key}, value: ${this.value} ) => ${
+      this.nextNode !== null ? this.nextNode.toString() : "null"
+    }`;
+  }
 }

@@ -94,7 +94,7 @@ export class LinkedList {
   }
 
   updateValue(index, value) {
-    const currentNode = at(index);
+    const currentNode = this.at(index);
     currentNode.value = value;
   }
 
